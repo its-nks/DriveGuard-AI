@@ -1,0 +1,267 @@
+Dataset 1 – OBD-II Vehicle Sensor Dataset
+Purpose
+
+Provides real-time vehicle sensor readings that simulate live data from a connected vehicle through the OBD-II interface.
+
+Dataset Statistics
+Original Rows: 60,439
+Final Rows after cleaning: 34,397
+Final Features: 18
+Major Preprocessing Decisions
+Removed metadata columns (Timestamp, Vehicle ID, Manufacturer, etc.).
+Converted percentage values and comma-separated decimals to numeric format.
+Removed rows with excessive missing values.
+Filled remaining missing values using median imputation.
+Encoded categorical features:
+AUTOMATIC → 0/1
+FUEL_TYPE → Numeric
+Engineered Features
+Engine Stress Index
+Thermal Stress
+Driving Score
+Air Flow Index
+Engine Efficiency
+Indian Road Severity Index (IRSI)
+Important Observations
+1. Dataset is not labeled
+
+There is no target column indicating vehicle failure.
+
+Implication: This dataset is suitable for:
+
+Live monitoring
+Feature extraction
+Health scoring
+Dashboard visualization
+
+It cannot be directly used to train a failure prediction model.
+
+2. Large amount of missing values
+
+Some sensor fields contained over 40% missing values.
+
+Rows with excessive missing values were removed before imputation.
+
+3. Engine Stress features show strong correlation
+
+Engine Stress Index is highly correlated with:
+
+Engine Load
+Engine RPM
+
+This is expected because it is a derived feature.
+
+Member 1 may later remove correlated variables if required.
+
+4. Dataset resembles live OBD-II sensor stream
+
+This dataset is ideal for:
+
+Raspberry Pi simulation
+Edge AI inference
+Real-time dashboard
+Explainable AI
+
+
+Dataset 2 – AI4I Predictive Maintenance Dataset
+Purpose
+
+Used for predictive maintenance model training.
+
+Dataset Statistics
+Rows: 10,000
+Features: 15
+Target:
+Machine Failure
+Engineered Features
+Temperature Difference
+Mechanical Stress
+Wear Rate
+Important Observations
+1. Severe Class Imbalance ⭐
+
+Machine Failure
+
+Normal Operation : 9661
+
+Failure : 339
+
+Only
+
+3.39%
+
+of observations represent failures.
+
+Implication
+
+Without imbalance handling,
+
+the model will mostly predict
+
+Normal Operation
+
+and still achieve very high accuracy.
+
+Accuracy alone will therefore be misleading.
+
+Recommendation
+
+During model training, consider
+
+SMOTE
+ADASYN
+Class Weighting
+Balanced Random Forest
+XGBoost with scale_pos_weight
+
+Evaluation metrics should include
+
+Precision
+Recall
+F1 Score
+ROC-AUC
+
+instead of only Accuracy.
+
+2. Dataset is already labeled
+
+Unlike Dataset 1,
+
+this dataset contains
+
+Machine Failure
+
+making it suitable for supervised learning.
+
+3. Failure Categories
+
+Machine Failure is accompanied by
+
+Tool Wear Failure
+Heat Dissipation Failure
+Power Failure
+Overstrain Failure
+Random Failure
+
+These can later support Explainable AI.
+
+Example:
+
+Failure predicted because Heat Dissipation Failure probability is high.
+
+4. Synthetic Dataset
+
+AI4I is an industrial benchmark dataset.
+
+Real-world deployment should combine it with live OBD-II sensor data.
+
+Dataset 3 – Driving Behaviour Dataset
+Purpose
+
+Captures road conditions and driving behaviour.
+
+Dataset Statistics
+
+Original Rows
+
+7392
+
+Duplicates
+
+0
+
+Engineered Features
+Vehicle Stress Index
+Road Impact Score
+Driving Aggressiveness
+Fuel Efficiency Score
+Important Observations
+1. Road labels are already available ⭐
+
+Dataset already provides
+
+Road Surface
+Traffic Condition
+Driving Style
+
+These eliminate the need to infer these conditions manually.
+
+2. Highly suitable for Indian Road Analysis
+
+Road surface variations
+
+combined with
+
+vertical acceleration
+
+can simulate
+
+potholes
+rough roads
+uneven roads
+
+which aligns with the project objective.
+
+3. No failure labels
+
+Like Dataset 1,
+
+this dataset has
+
+no target variable.
+
+It should not be used for failure prediction.
+
+Instead,
+
+it provides context that improves prediction quality.
+
+4. Useful for Explainable AI
+
+Example explanation
+
+High engine stress occurred while driving aggressively on uneven roads under heavy traffic.
+
+instead of
+
+Failure probability = 0.83
+
+This significantly improves explainability.
+
+5. Good feature diversity
+
+Dataset contains
+
+Engine behaviour
+Vehicle dynamics
+Driver behaviour
+Road condition
+
+making it useful for
+
+Road-aware Edge AI.
+
+Final Recommendation for Member 1
+Dataset	Use
+OBD-II	Live Edge AI inference
+AI4I	Train predictive maintenance model
+Driving Behaviour	Road-condition context + driver behaviour analysis
+Integration Strategy
+Live OBD-II Data
+        │
+        ▼
+Feature Engineering
+        │
+        ▼
+Road Context
+(from Dataset 3)
+        │
+        ▼
+Predictive Model
+(trained on Dataset 2)
+        │
+        ▼
+Explainable AI
+        │
+        ▼
+Driver Alert
